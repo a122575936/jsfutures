@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My OS Platform</title>
+</head>
+<body>
+<script type="text/javascript" src="http://data.eastmoney.com/futures/js/FData.js"></script>
+<!--<script type="text/javascript" src="jquery-1.12.0.js"></script>-->
+<script>
+var request = require('request');
+function getMainContracts()
+{
+    return cc.map(function(c){return c.newContract})
+}
+
+function loadData(contract)
+{
+    request('http://stock2.finance.sina.com.cn/futures/api/json.php/IndexService.getInnerFuturesMinLine?symbol=' + contract, function (error, response, body) {
+      if (!error && response.statusCode == 200) {
+        //console.log(body) // Show the HTML for the Google homepage.
+        hlocs = JSON.parse(body)
+        console.log(hlocs)
+
+        function in_trading_time(hloc)
+        {
+            var t = hloc[4]
+            var ts = t.split(':')
+            var h = parseInt(ts[0])
+            var m = parseInt(ts[1])
+
+            if(h == 10 && (15 <= m && m <= 29))
+            {
+                return false
+            }
+            if(h == 11 && m == 30)
+            {
+                return false
+            }
+            if(h == 15 && m == 0)
+            {
+                return false
+            }
+            if(15 <= h && h <= 20)
+            {
+                return false
+            }
+            return true
+        }
+        
+        console.log('len of hlocs ', hlocs.length)
+        hlocs = hlocs.filter(in_trading_time)
+        console.log('len of hlocs ', hlocs.length)
+      }
+    })
+}
+// get the system platform using node.js
+var os = require('os');
+document.write('You are running on ', os.platform());
+var contracts = getMainContracts()
+loadData('p1605')
+</script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+{
+  "name": "helloworld",
+  "main": "index.html",
+  "dependencies": {
+    "request": "^2.69.0"
+  }
+}
