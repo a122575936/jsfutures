@@ -25,6 +25,10 @@ function loadData(contract, oncomplete)
 
         function in_trading_time(hloc)
         {
+            if (hloc.length < 4)
+            {
+                return false
+            }
             var t = hloc[4]
             var ts = t.split(':')
             var h = parseInt(ts[0])
@@ -43,6 +47,11 @@ function loadData(contract, oncomplete)
                 return false
             }
             if(15 <= h && h <= 20)
+            {
+                return false
+            }
+            var localtime = new Date()
+            if (h < 20 && localtime.getHours() >= 20)
             {
                 return false
             }
