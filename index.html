@@ -4,10 +4,12 @@
   <title>My OS Platform</title>
 </head>
 <body>
-<script type="text/javascript" src="http://data.eastmoney.com/futures/js/FData.js"></script>
+<script charset="gb2312" type="text/javascript" src="http://data.eastmoney.com/futures/js/FData.js"></script>
 <!--<script type="text/javascript" src="jquery-1.12.0.js"></script>-->
 <script>
 var request = require('request');
+var sprintf = require("sprintf-js").sprintf
+
 function getMainContracts()
 {
     return cc.map(function(c){return c.newContract})
@@ -18,8 +20,8 @@ function loadData(contract, oncomplete)
     request('http://stock2.finance.sina.com.cn/futures/api/json.php/IndexService.getInnerFuturesMinLine?symbol=' + contract, function (error, response, body) {
       if (!error && response.statusCode == 200) {
         //console.log(body) // Show the HTML for the Google homepage.
-        hlocs = JSON.parse(body)
-        console.log(hlocs)
+        var hlocs = JSON.parse(body)
+        //console.log(hlocs)
 
         function in_trading_time(hloc)
         {
@@ -47,13 +49,18 @@ function loadData(contract, oncomplete)
             return true
         }
         
-        console.log('len of hlocs ', hlocs.length)
+        if (hlocs == null)
+        {
+            //console.log('hlocs is null ', contract)
+            return null
+        }
+        //console.log('len of hlocs ', hlocs.length)
         hlocs = hlocs.filter(in_trading_time)
-        console.log('len of hlocs ', hlocs.length)
+        //console.log('len of hlocs ', hlocs.length)
 
         function to_hloc(arr)
         {
-            hloc = {}
+            var hloc = {}
             hloc.h = parseFloat(arr[0])
             hloc.l = parseFloat(arr[0])
             hloc.o = parseFloat(arr[0])
@@ -63,28 +70,134 @@ function loadData(contract, oncomplete)
             return hloc
         }
         hlocs = hlocs.map(to_hloc)
-        console.log(hlocs)
-        oncomplete && oncomplete(hlocs)
+        //console.log(hlocs)
+        oncomplete && oncomplete(hlocs, contract)
       }
     })
 }
 
-function analyzeData(hlocs)
+function last(arr)
 {
+    return arr[arr.length - 1]
+}
+
+function convert(hlocs)
+{
+    if (hlocs.length <= 0)
+    {
+        return null
+    }
     function get_close(hloc)
     {
         return hloc.c
     }
+    function get_volume(hloc)
+    {
+        return hloc.v
+    }
     var prices = hlocs.map(get_close)
+    var volume = hlocs.map(get_volume)
+    var hloc = {}
     var max = Math.max.apply(null, prices)
     var min = Math.min.apply(null, prices)
+    hloc.h = max
+    hloc.l = min
+    hloc.o = prices[0]
+    hloc.c = last(prices)
+    hloc.v = volume.reduce(function(a, b){ return a + b }, 0)
+    //console.log(hlocs[0])
+    hloc.t = hlocs[0].t
+    //console.log(prices)
+    //console.log(hloc.o)
+    //console.log(hloc.c)
+    return hloc
+}
+
+function convert1minto15min(hlocs)
+{
+    var index = hlocs.length / 15
+    if (hlocs.length % 15 > 0)
+    {
+        index += 1
+    }
+
+    var ret = []
+    for (var i = 0; i < index; i++)
+    {
+        var hloc = convert(hlocs.slice(i * 15, (i + 1) * 15))
+        if (hloc == null)
+        {
+            //console.log('hloc is null')
+        }
+        else
+        {
+            ret.push(hloc)
+        }
+    }
+    return ret
+}
+
+function parseData(hlocs, contract)
+{
+    hlocs = convert1minto15min(hlocs)
+    if (hlocs.length < 2)
+    {
+        console.log('less then 2 ', contract)
+        return
+    }
+
+    var last = hlocs[hlocs.length - 1]
+    var lastbutone = hlocs[hlocs.length - 2]
+
+    var volumelast = last.v
+    var volumelastbutone = parseFloat(lastbutone.v)
+
+    if (volumelast <= 0 || volumelastbutone <= 0)
+    {
+        //console.log('volume less then 0 ', contract)
+        return
+    }
+
+    //console.log(contract)
+
+    closelast = last.c
+    closelastbutone = lastbutone.c
+
+    volumerate = volumelast / volumelastbutone
+    closerate = (closelast - closelastbutone) / closelastbutone
+
+    
+    //console.log("%.2f, %s %d %d", closerate, contract, closelast, closelastbutone)
+    var str = sprintf("%.3f, %s", closerate, contract)
+    if (Math.abs(closerate) > 0.004)
+    {
+        console.error(str)
+    }
+    else if (Math.abs(closerate) > 0.003)
+    {
+        console.info(str)
+    }
+    else if (Math.abs(closerate) > 0.002)
+    {
+        console.debug(str)
+    }
 }
 
 // get the system platform using node.js
 var os = require('os');
 document.write('You are running on ', os.platform());
 var contracts = getMainContracts()
-loadData('p1605', analyzeData)
+//console.log(contracts)
+function onInterval()
+{
+    console.log('-------------------------------------')
+    console.log('-------------------------------------')
+    contracts.map(function(contract){
+        loadData(contract, parseData)
+    })
+}
+setInterval("onInterval()", 60000)
+onInterval()
 </script>
 </body>
 </html>

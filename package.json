@@ -2,6 +2,7 @@
   "name": "helloworld",
   "main": "index.html",
   "dependencies": {
-    "request": "^2.69.0"
+    "request": "^2.69.0",
+    "sprintf-js": "^1.0.3"
   }
 }
