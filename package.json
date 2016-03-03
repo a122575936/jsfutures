@@ -2,7 +2,10 @@
   "name": "helloworld",
   "main": "index.html",
   "dependencies": {
+    "react": "^0.14.7",
+    "react-stockcharts": "^0.3.1",
     "request": "^2.69.0",
-    "sprintf-js": "^1.0.3"
+    "sprintf-js": "^1.0.3",
+    "underscore": "^1.8.3"
   }
 }
