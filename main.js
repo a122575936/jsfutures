@@ -43,16 +43,15 @@ function getExchangeHexun(contract)
 function getQuotelistUrlHexun(contract)
 {
     var e = getExchangeHexun(contract)
-    var dateformat = d3.time.format("%Y%m%d")
     var url = sprintf("http://webftcn.hermes.hexun.com/shf/quotelist?code=%s%s&column=Code,Name,DateTime,Price,Amount,Volume,LastClose,Open,High,Low,UpDown,UpDownRate,Speed,PriceWeight,AveragePrice,OpenTime,CloseTime,EntrustRatio,EntrustDiff,OutVolume,InVolume,ExchangeRatio,TotalPrice,LastSettle,SettlePrice,BuyPrice,BuyVolume,SellPrice,SellVolume,VolumeRatio,PE,LastVolume,LastCount,LastInOut,VibrationRatio,Total,DealCount,OpenPosition,ClosePosition,PositionDiff,LastPositions,AddPosition,OpenInterest", e, contract)
-    //console.log(url)
     return url
 }
 
 function getUrlHexun(contract)
 {
     var e = getExchangeHexun(contract)
-    var url = sprintf("http://webftcn.hermes.hexun.com/shf/kline?code=%s%s&start=20160305210000&number=-960&type=2&t=%f", e, contract.toLowerCase(), Math.random())
+    var dateformat = d3.time.format("%Y%m%d")
+    var url = sprintf("http://webftcn.hermes.hexun.com/shf/kline?code=%s%s&start=20170308210000&number=-960&type=2&t=%f", e, contract.toLowerCase(), Math.random())
     return url
 }
 
@@ -240,7 +239,7 @@ function parseData(contract)
             }
             
             var str = sprintf("%.3f, %s", closerate, contract)
-            if (Math.abs(closerate) > 0.003)
+            if (Math.abs(closerate) > 0.004)
             {
                 showChart(data, str)
             }
@@ -258,15 +257,15 @@ function parseData(contract)
 
 function onInterval()
 {
-    var div_futures = document.getElementById("div_futures")
-    while (div_futures && div_futures.hasChildNodes())
-    {
-        div_futures.removeChild(div_futures.lastChild)
-    }
     async.map(contracts, loadDataHexun, function(){
         console.log('loadDataHexun complete!')
         async.map(contracts, loadQuotelistDataHexun, function(){
             console.log('loadQuotelistDataHexun complete!')
+            var div_futures = document.getElementById("div_futures")
+            while (div_futures && div_futures.hasChildNodes())
+            {
+                div_futures.removeChild(div_futures.lastChild)
+            }
             parseData()
         })
     })
