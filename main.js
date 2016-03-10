@@ -213,6 +213,10 @@ function parseData(contract)
 {
     console.log('-------------------------------------')
     contracts.map(function(contract){
+        if (_.include(['BB', 'FB'], getCode(contract)))
+        {
+            return
+        }
         var data = contractDatas[contract]
         var quote = quotelistDatas[contract]
         if (data && data.length && quote)
