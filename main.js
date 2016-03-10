@@ -1,7 +1,3 @@
-var request = require('request');
-var sprintf = require("sprintf-js").sprintf
-var _ = require("underscore")
-var async = require('async')
 var contractDatas = {}
 var quotelistDatas = {}
 var contracts = getMainContracts()
@@ -60,17 +56,10 @@ function loadQuotelistDataHexun(contract, oncomplete)
     var url = getQuotelistUrlHexun(contract)
     if (url)
     {
-        request(url, function (error, response, body) {
-          if (!error && response.statusCode == 200) {
+        $.get(url, function (body) {
             var data = eval(body)
             quotelistDatas[contract] = data
-            //console.log('quotelist ', data)
-          }
-          else
-          {
-            console.log('load data error ', contract)
-          }
-          oncomplete && oncomplete()
+            oncomplete && oncomplete()
         })
     }
 }
@@ -80,16 +69,10 @@ function loadDataHexun(contract, oncomplete)
     var url = getUrlHexun(contract)
     if (url)
     {
-        request(url, function (error, response, body) {
-          if (!error && response.statusCode == 200) {
+        $.get(url, function (body) {
             var hlocs = eval(body)
             contractDatas[contract] = hlocs.Data[0]
-          }
-          else
-          {
-            console.log('load data error ', contract)
-          }
-          oncomplete && oncomplete()
+            oncomplete && oncomplete()
         })
     }
 }

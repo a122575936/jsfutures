@@ -3,9 +3,7 @@
   "main": "index.html",
   "dependencies": {
     "async": "^1.5.2",
-    "react": "^0.14.7",
-    "react-stockcharts": "^0.3.1",
-    "request": "^2.69.0",
+    "jquery": "^2.2.1",
     "sprintf-js": "^1.0.3",
     "underscore": "^1.8.3"
   }
