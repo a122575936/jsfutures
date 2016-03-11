@@ -4,7 +4,15 @@ var contracts = getMainContracts()
 
 function getMainContracts()
 {
-    return cc.slice(0, cc.length - 1).map(function(c){return c.newContract})
+    var arr = cc.slice(0, cc.length - 1).map(function(c){return c.newContract})
+    arr = arr.filter(function(contract){
+        if (_.include(['BB', 'FB', 'RS'], getCode(contract)))
+        {
+            return false
+        }
+        return true
+    })
+    return arr
 }
 
 function getExchangeHexun(contract)
@@ -196,10 +204,6 @@ function parseData(contract)
 {
     console.log('-------------------------------------')
     contracts.map(function(contract){
-        if (_.include(['BB', 'FB'], getCode(contract)))
-        {
-            return
-        }
         var data = contractDatas[contract]
         var quote = quotelistDatas[contract]
         if (data && data.length && quote)
