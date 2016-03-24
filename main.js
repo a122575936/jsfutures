@@ -6,7 +6,7 @@ function getMainContracts()
 {
     var arr = cc.slice(0, cc.length - 1).map(function(c){return c.newContract})
     arr = arr.filter(function(contract){
-        if (_.include(['BB', 'FB', 'RS'], getCode(contract)))
+        if (_.include(['BB', 'FB', 'RS', 'RI', 'OI', 'WH'], getCode(contract)))
         {
             return false
         }
@@ -130,7 +130,7 @@ function getExchange(contract)
 function showChart(hlocs, str)
 {
     var margin = {top: 20, right: 20, bottom: 30, left: 50},
-            width = 960 - margin.left - margin.right,
+            width = 860 - margin.left - margin.right,
             height = 500 - margin.top - margin.bottom;
 
     var parseDate = d3.time.format("%Y%m%d%H%M%S").parse;
@@ -153,11 +153,13 @@ function showChart(hlocs, str)
             .scale(y)
             .orient("left");
 
-    var svg = d3.select("div").append("svg")
+    var svg = d3.select("#div_futures").append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
             .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    
 
     var accessor = candlestick.accessor();
 
@@ -246,6 +248,14 @@ function parseData(contract)
     })
 }
 
+function removeAllChildren(container)
+{
+    while (container && container.hasChildNodes())
+    {
+        container.removeChild(container.lastChild)
+    }
+}
+
 function onInterval()
 {
     async.map(contracts, loadDataHexun, function(){
@@ -253,14 +263,11 @@ function onInterval()
         async.map(contracts, loadQuotelistDataHexun, function(){
             console.log('loadQuotelistDataHexun complete!')
             var div_futures = document.getElementById("div_futures")
-            while (div_futures && div_futures.hasChildNodes())
-            {
-                div_futures.removeChild(div_futures.lastChild)
-            }
+            removeAllChildren(div_futures)
             parseData()
         })
     })
 }
 
-setInterval("onInterval()", 60000)
+setInterval("onInterval()", 10000)
 onInterval()
