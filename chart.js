@@ -16,6 +16,15 @@ function showChart(hlocs, str)
             .xScale(x)
             .yScale(y);
 
+    var tradearrow = techan.plot.tradearrow()
+            .xScale(x)
+            .yScale(y)
+            .orient(function(d) { return d.type.startsWith("buy") ? "up" : "down"; })
+
+    var atrtrailingstop = techan.plot.atrtrailingstop()
+            .xScale(x)
+            .yScale(y);
+
     var xAxis = d3.svg.axis()
             .scale(x)
             .orient("bottom");
@@ -23,14 +32,6 @@ function showChart(hlocs, str)
     var yAxis = d3.svg.axis()
             .scale(y)
             .orient("left");
-
-    var svg = d3.select("#div_futures").append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-    
 
     var accessor = candlestick.accessor();
 
@@ -45,6 +46,32 @@ function showChart(hlocs, str)
         };
     }).sort(function(a, b) { return d3.ascending(accessor.d(a), accessor.d(b)); });
 
+    tmp = data.map(function(d){return d.close})
+    //console.log(tmp)
+    var valley_pivots = peak_valley_pivots(data, 0.013, -0.013)
+    //console.log()
+
+    var trades = []
+    for (var i = 0; i < valley_pivots.length; i++){
+        var vp = valley_pivots[i]
+        if (vp == 1)
+        {
+            trades.push({date: data[i].date, type: "buy", price: data[i].high, quantity:1})
+        }
+        else if (vp == -1)
+        {
+            trades.push({date: data[i].date, type: "sell", price: data[i].low, quantity:1})
+        }
+    }
+
+    var atrtrailingstopData = techan.indicator.atrtrailingstop()(data);
+
+    var svg = d3.select("#div_futures").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
     x.domain(data.map(accessor.d));
     y.domain(techan.scale.plot.ohlc(data, accessor).domain());
 
@@ -52,6 +79,16 @@ function showChart(hlocs, str)
             .datum(data)
             .attr("class", "candlestick")
             .call(candlestick);
+
+    svg.append("g")
+            .datum(trades)
+            .attr("class", "tradearrow")
+            .call(tradearrow);
+
+    svg.append("g")
+                .datum(atrtrailingstopData)
+                .attr("class", "atrtrailingstop")
+                .call(atrtrailingstop);
 
     svg.append("g")
             .attr("class", "x axis")

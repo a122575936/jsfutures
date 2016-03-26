@@ -31,13 +31,10 @@ function parseData(contractDatas, quotelistDatas)
     ret = ret.sort(function(obj1, obj2){return obj2.absrate - obj1.absrate})
     ret.map(function(obj){
         var str = sprintf("%.3f, %s", obj.rate, obj.contract)
+        showChart(obj.data, str)
         if (obj.absrate > 0.004)
         {
-            showChart(obj.data, str)
-        }
-        if (obj.absrate > 0.004)
-        {
-            console.error(str)
+            console.warn(str)
         }
         else if (obj.absrate > 0.003)
         {
@@ -64,7 +61,7 @@ function onInterval()
 
 function main()
 {
-    setInterval("onInterval()", 10000)
+    //setInterval("onInterval()", 10000)
     onInterval()
 }
 
