@@ -62,8 +62,10 @@ function onInterval()
 
 function main()
 {
-    //setInterval("onInterval()", 10000)
+    setInterval("onInterval()", 10000)
     onInterval()
+    //backtest_main()
+    //trader_main()
 }
 
 app = {}

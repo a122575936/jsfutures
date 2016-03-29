@@ -90,6 +90,7 @@ function showChart(hlocs, str)
     }
 
 
+    //return trades
     //var trades = []
     //for (var i = 0; i < valley_pivots.length; i++){
         //var vp = valley_pivots[i]
