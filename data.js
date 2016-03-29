@@ -55,6 +55,27 @@ function getUrlHexun(contract)
     return url
 }
 
+function getHistoryMinuteUrlHexun(contract)
+{
+    var e = getExchangeHexun(contract)
+    var dateformat = d3.time.format("%Y%m%d")
+    var url = sprintf("http://webftcn.hermes.hexun.com/shf/historyminute?code=%s%s&date=20160322&t=%f", e, contract.toLowerCase(), Math.random())
+    return url
+}
+
+function loadHistoryMinuteDataHexun(contract, oncomplete)
+{
+    var url = getHistoryMinuteUrlHexun(contract)
+    if (url)
+    {
+        $.get(url, function (body) {
+            var data = eval(body)
+            console.log(data)
+            oncomplete && oncomplete(null, {contract: contract, data: data})
+        })
+    }
+}
+
 function loadQuotelistDataHexun(contract, oncomplete)
 {
     var url = getQuotelistUrlHexun(contract)

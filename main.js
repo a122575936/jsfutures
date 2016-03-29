@@ -31,14 +31,14 @@ function parseData(contractDatas, quotelistDatas)
     ret = ret.sort(function(obj1, obj2){return obj2.absrate - obj1.absrate})
     ret.map(function(obj){
         var str = sprintf("%.3f, %s", obj.rate, obj.contract)
-        showChart(obj.data, str)
+        //showChart(obj.data, str)
         if (obj.absrate > 0.004)
         {
-            console.warn(str)
+            //console.warn(str)
         }
         else if (obj.absrate > 0.003)
         {
-            console.info(str)
+            //console.info(str)
         }
     })
 }
@@ -55,6 +55,7 @@ function onInterval()
             console.log('loadQuotelistDataHexun complete!')
             quotes.map(function(quote){quotelistDatas[quote.contract] = quote.data})
             parseData(contractDatas, quotelistDatas)
+            trader_onData(contractDatas)
         })
     })
 }

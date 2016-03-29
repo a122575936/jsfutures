@@ -35,7 +35,7 @@ function showChart(hlocs, str)
 
     var accessor = candlestick.accessor();
 
-    data = hlocs.slice(0, 300).map(function(d) {
+    data = hlocs.map(function(d) {
         return {
             date: parseDate(d[0].toString()),
             open: +d[2],
@@ -48,23 +48,60 @@ function showChart(hlocs, str)
 
     tmp = data.map(function(d){return d.close})
     //console.log(tmp)
-    var valley_pivots = peak_valley_pivots(data, 0.013, -0.013)
+    //var valley_pivots = peak_valley_pivots(data, 0.013, -0.013)
     //console.log()
 
+    var atrtrailingstopData = techan.indicator.atrtrailingstop()(data);
+
     var trades = []
-    for (var i = 0; i < valley_pivots.length; i++){
-        var vp = valley_pivots[i]
-        if (vp == 1)
+    var trade = null
+    for (var i = 0; i < data.length; i++){
+        var d = data[i]
+        var atrd = atrtrailingstopData[-data.length + atrtrailingstopData.length + i - 1]
+        //console.log('d', d)
+        //console.log('atrd', atrd)
+        if (d && atrd)
         {
-            trades.push({date: data[i].date, type: "buy", price: data[i].high, quantity:1})
-        }
-        else if (vp == -1)
-        {
-            trades.push({date: data[i].date, type: "sell", price: data[i].low, quantity:1})
+            if (d.close && atrd.up && (d.close < atrd.up))
+            {
+                if (trade && trade.type == "buy")
+                {
+
+                }
+                else
+                {
+                    trade = {date: data[i].date, type: "buy", price: data[i].close, quantity:1}
+                    trades.push(trade)
+                }
+            }
+            if (d.close && atrd.down && (d.close > atrd.down))
+            {
+                if (trade && trade.type == "sell")
+                {
+
+                }
+                else
+                {
+                    trade = {date: data[i].date, type: "sell", price: data[i].close, quantity:1}
+                    trades.push(trade)
+                }
+            }
         }
     }
 
-    var atrtrailingstopData = techan.indicator.atrtrailingstop()(data);
+
+    //var trades = []
+    //for (var i = 0; i < valley_pivots.length; i++){
+        //var vp = valley_pivots[i]
+        //if (vp == 1)
+        //{
+            //trades.push({date: data[i].date, type: "buy", price: data[i].high, quantity:1})
+        //}
+        //else if (vp == -1)
+        //{
+            //trades.push({date: data[i].date, type: "sell", price: data[i].low, quantity:1})
+        //}
+    //}
 
     var svg = d3.select("#div_futures").append("svg")
             .attr("width", width + margin.left + margin.right)
@@ -108,4 +145,6 @@ function showChart(hlocs, str)
             .attr("dy", ".71em")
             .style("text-anchor", "end")
             .text("Price ($)");
+
+    return trades
 }
