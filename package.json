@@ -2,9 +2,5 @@
   "name": "helloworld",
   "main": "index.html",
   "dependencies": {
-    "async": "^1.5.2",
-    "jquery": "^2.2.1",
-    "sprintf-js": "^1.0.3",
-    "underscore": "^1.8.3"
   }
 }
