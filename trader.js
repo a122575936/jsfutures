@@ -11,10 +11,10 @@ function trader_onData(contractDatas)
         //trader_parseData(c, data)
     //}
     
-    var c = 'NI1605'
-    var data = contractDatas[c]
-    trader_parseData(c, data)
-
+    ['P1609', 'CS1609', 'C1701', 'NI1605', 'MA1605'].map(function(c){
+        var data = contractDatas[c]
+        trader_parseData(c, data)
+    })
 }
 
 function trader_parseData(c, data)
@@ -45,5 +45,5 @@ function trader_parseData(c, data)
         sum += profit
     }
     //console.log(trades)
-    console.log(c, ' sum : ', sum)
+    console.log(c, ' sum : ', sum, ' count : ', trades.length)
 }

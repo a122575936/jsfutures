@@ -1,11 +1,13 @@
 function backtest_main()
 {
-    var path = 'c:\\datas'
-    fs.readdir(path, function(err, files){
-        files.map(function(file){
-            backtest_parseFile(path + '\\' + file)
-        })
-    })
+    //var path = 'c:\\datas'
+    //fs.readdir(path, function(err, files){
+        //files.map(function(file){
+            //backtest_parseFile(path + '\\' + file)
+        //})
+    //})
+
+    backtest_parseFile('c:/datas/SQauMI.csv')
 }
 
 function backtest_parseFile(file)
@@ -31,15 +33,13 @@ function backtest_parseFile(file)
     });   
 
     rl.on('close', function() {
-        //console.log(hlocs)
-        //console.log('file close!')
         backtest_parseData(file, hlocs)
     })
 }
 
 function backtest_parseData(c, data)
 {
-    var trades = showChart(data, c)
+    var trades = showChart(data.slice(0, 600), c)
 
     var sum = 0
     for (var i = 0; i < trades.length; i++)
@@ -65,5 +65,5 @@ function backtest_parseData(c, data)
         sum += profit
     }
     //console.log(trades)
-    console.log(c, ' sum : ', sum, ' count : ', trades.length * 5)
+    console.log(c, ' sum : ', sum, ' count : ', trades.length)
 }

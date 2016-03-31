@@ -31,7 +31,9 @@ function parseData(contractDatas, quotelistDatas)
     ret = ret.sort(function(obj1, obj2){return obj2.absrate - obj1.absrate})
     ret.map(function(obj){
         var str = sprintf("%.3f, %s", obj.rate, obj.contract)
-        //showChart(obj.data, str)
+        //var traders = showChart(obj.data, str)
+        //console.error(obj.contract, 'length of traders ', traders.length)
+
         if (obj.absrate > 0.004)
         {
             //console.warn(str)
@@ -65,7 +67,6 @@ function main()
     setInterval("onInterval()", 10000)
     onInterval()
     //backtest_main()
-    //trader_main()
 }
 
 app = {}

@@ -1,7 +1,7 @@
 function showChart(hlocs, str)
 {
     var margin = {top: 20, right: 20, bottom: 30, left: 50},
-            width = 860 - margin.left - margin.right,
+            width = (860 / 300) * hlocs.length - margin.left - margin.right,
             height = 500 - margin.top - margin.bottom;
 
     var parseDate = d3.time.format("%Y%m%d%H%M%S").parse;
@@ -64,25 +64,27 @@ function showChart(hlocs, str)
         {
             if (d.close && atrd.up && (d.close < atrd.up))
             {
-                if (trade && trade.type == "buy")
+                var tradertype = 'sell'
+                if (trade && trade.type == tradertype)
                 {
 
                 }
                 else
                 {
-                    trade = {date: data[i].date, type: "buy", price: data[i].close, quantity:1}
+                    trade = {date: data[i].date, type: tradertype, price: data[i].close, quantity:1}
                     trades.push(trade)
                 }
             }
             if (d.close && atrd.down && (d.close > atrd.down))
             {
-                if (trade && trade.type == "sell")
+                var tradertype = 'buy'
+                if (trade && trade.type == tradertype)
                 {
 
                 }
                 else
                 {
-                    trade = {date: data[i].date, type: "sell", price: data[i].close, quantity:1}
+                    trade = {date: data[i].date, type: tradertype, price: data[i].close, quantity:1}
                     trades.push(trade)
                 }
             }
