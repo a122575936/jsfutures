@@ -11,7 +11,7 @@ function trader_onData(contractDatas)
         //trader_parseData(c, data)
     //}
     
-    ['P1609', 'CS1609', 'C1701', 'NI1605', 'MA1605'].map(function(c){
+    ['C1701', 'P1609', 'CS1609', 'NI1605', 'MA1605'].map(function(c){
         var data = contractDatas[c]
         trader_parseData(c, data)
     })
