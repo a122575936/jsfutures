@@ -55,7 +55,7 @@ function showChart(hlocs, str)
 
     var trades = []
     var trade = null
-    for (var i = 0; i < data.length; i++){
+    for (var i = 0; i < data.length - 1; i++){
         var d = data[i]
         var atrd = atrtrailingstopData[-data.length + atrtrailingstopData.length + i - 1]
         //console.log('d', d)
