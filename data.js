@@ -50,7 +50,6 @@ function getQuotelistUrlHexun(contract)
 function getUrlHexun(contract)
 {
     var e = getExchangeHexun(contract)
-    var dateformat = d3.time.format("%Y%m%d")
     var url = sprintf("http://webftcn.hermes.hexun.com/shf/kline?code=%s%s&start=20170308210000&number=-960&type=2&t=%f", e, contract.toLowerCase(), Math.random())
     return url
 }
@@ -58,7 +57,6 @@ function getUrlHexun(contract)
 function getHistoryMinuteUrlHexun(contract)
 {
     var e = getExchangeHexun(contract)
-    var dateformat = d3.time.format("%Y%m%d")
     var url = sprintf("http://webftcn.hermes.hexun.com/shf/historyminute?code=%s%s&date=20160322&t=%f", e, contract.toLowerCase(), Math.random())
     return url
 }
