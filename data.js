@@ -2,7 +2,7 @@ function getMainContracts()
 {
     var arr = cc.slice(0, cc.length - 1).map(function(c){return c.newContract})
     arr = arr.filter(function(contract){
-        if (_.include(['BB', 'FB', 'RS', 'RI', 'OI', 'WH'], getCode(contract)))
+        if (_.include(['BB', 'FB', 'RS', 'RI', 'OI', 'WH', 'IC', 'IF', 'IH', 'SN', 'T', 'TF', 'LR', 'PM'], getCode(contract)))
         {
             return false
         }
@@ -50,7 +50,16 @@ function getQuotelistUrlHexun(contract)
 function getUrlHexun(contract)
 {
     var e = getExchangeHexun(contract)
+    //type : 2 minute 5 daily
     var url = sprintf("http://webftcn.hermes.hexun.com/shf/kline?code=%s%s&start=20170308210000&number=-960&type=2&t=%f", e, contract.toLowerCase(), Math.random())
+    return url
+}
+
+function getDailyUrlHexun(contract)
+{
+    var e = getExchangeHexun(contract)
+    //type : 2 minute 5 daily
+    var url = sprintf("http://webftcn.hermes.hexun.com/shf/kline?code=%s%s&start=20170308210000&number=-960&type=5&t=%f", e, contract.toLowerCase(), Math.random())
     return url
 }
 
@@ -89,6 +98,18 @@ function loadQuotelistDataHexun(contract, oncomplete)
 function loadDataHexun(contract, oncomplete)
 {
     var url = getUrlHexun(contract)
+    if (url)
+    {
+        $.get(url, function (body) {
+            var hlocs = eval(body)
+            oncomplete && oncomplete(null, {contract: contract, data: hlocs.Data[0]})
+        })
+    }
+}
+
+function loadDailyDataHexun(contract, oncomplete)
+{
+    var url = getDailyUrlHexun(contract)
     if (url)
     {
         $.get(url, function (body) {

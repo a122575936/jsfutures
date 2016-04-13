@@ -1,4 +1,4 @@
-function showChart(hlocs, str)
+function showChart(hlocs, str, div)
 {
     var margin = {top: 20, right: 20, bottom: 30, left: 50},
             width = (860 / 300) * hlocs.length - margin.left - margin.right,
@@ -106,7 +106,7 @@ function showChart(hlocs, str)
         //}
     //}
 
-    var svg = d3.select("#div_futures").append("svg")
+    var svg = d3.select(div).append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
             .append("g")

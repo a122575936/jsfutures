@@ -45,19 +45,46 @@ function parseData(contractDatas, quotelistDatas)
     })
 }
 
+function showChartByVolatility(contractDatas, contractDailyDatas, quotelistDatas)
+{
+    removeAllChildren($('#myTabContent #home')[0])
+    removeAllChildren($('#myTabContent #profile')[0])
+    var ret = []
+    for (contract in contractDatas)
+    {
+        var quoteData = quotelistDatas[contract]
+        var rate = quoteData.Data[0][0][11]
+        ret.push({contract : contract, rate : rate})
+    }
+    ret = ret.sort(function(a,b){return Math.abs(b.rate) - Math.abs(a.rate)})
+    for(var i = 0; i < ret.length; i++)
+    {
+        //console.log(ret[i].contract)
+        var contract = ret[i].contract
+        showChart(contractDatas[contract], contract, '#myTabContent #home')
+        showChart(contractDailyDatas[contract], contract, '#myTabContent #profile')
+    }
+}
+
+
 function onInterval()
 {
     var contracts = getMainContracts()
     var contractDatas = {}
+    var contractDailyDatas = {}
     var quotelistDatas = {}
     async.map(contracts, loadDataHexun, function(err, datas){
         console.log('loadDataHexun complete!')
         datas.map(function(data){contractDatas[data.contract] = data.data})
-        async.map(contracts, loadQuotelistDataHexun, function(err, quotes){
-            console.log('loadQuotelistDataHexun complete!')
-            quotes.map(function(quote){quotelistDatas[quote.contract] = quote.data})
-            parseData(contractDatas, quotelistDatas)
-            trader_onData(contractDatas)
+        async.map(contracts, loadDailyDataHexun, function(err, dailyDatas){
+            dailyDatas.map(function(data){contractDailyDatas[data.contract] = data.data})
+            async.map(contracts, loadQuotelistDataHexun, function(err, quotes){
+                console.log('loadQuotelistDataHexun complete!')
+                quotes.map(function(quote){quotelistDatas[quote.contract] = quote.data})
+                parseData(contractDatas, quotelistDatas)
+                showChartByVolatility(contractDatas, contractDailyDatas, quotelistDatas)
+                trader_onData(contractDatas)
+            })
         })
     })
 }

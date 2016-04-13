@@ -2,6 +2,7 @@
 <head>
   <title>My OS Platform</title>
 </head>
+<link rel="stylesheet" href="bootstrap.css">
 <style>
 
     body {
@@ -95,6 +96,7 @@
 <script src="async.js"></script>
 <script src="sprintf.js"></script>
 <script src="jquery.js"></script>
+<script src="bootstrap.js"></script>
 <script src="dom.js"></script>
 <script src="zigzag.js"></script>
 <script src="chart.js"></script>
@@ -102,6 +104,25 @@
 <script src="trader.js"></script>
 <script src="backtest.js"></script>
 <script src="main.js"></script>
+<div>
+
+  <!-- Nav tabs -->
+  <ul id="myTabs" class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Home</a></li>
+    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Profile</a></li>
+    <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Messages</a></li>
+    <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>
+  </ul>
+
+  <!-- Tab panes -->
+  <div id="myTabContent" class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="home">home</div>
+    <div role="tabpanel" class="tab-pane" id="profile">profile</div>
+    <div role="tabpanel" class="tab-pane" id="messages">messages</div>
+    <div role="tabpanel" class="tab-pane" id="settings">settings</div>
+  </div>
+
+</div>
 <div id="div_futures"/>
 </body>
 </html>
